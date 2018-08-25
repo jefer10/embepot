@@ -2,21 +2,38 @@
 
 ### PSoCCreator ###
 # Project Settings
-*.cywrk.*
-*.cyprj.*
+#*.cywrk.*
+#*.cyprj.*
 
 # Generated Assets and Resources
-Debug/
-Release/
-Export/
-*/codegentemp
-*/Generated_Source
-*_datasheet.pdf
-*_timing.html
-*.cycdx
-*.cyfit
-*.rpt
-*.svd
+#Debug/
+#Release/
+#Export/
+#*/codegentemp
+#*/Generated_Source
+#*_datasheet.pdf
+#*_timing.html
+#*.cycdx
+#*.cyfit
+#*.rpt
+#*.svd
 
 
 # End of https://www.gitignore.io/api/psoccreator
+
+*.cywrk.*
+
+/*.cydsn/*
+
+!/*.cydsn/*.cydwr
+
+!/*.cydsn/*.cyprj
+
+!/*.cydsn/*.c
+
+!/*.cydsn/*.h
+
+!/*.cydsn/TopDesign/
+
+!/*.cydsn/TopDesign/
+*.cysch
