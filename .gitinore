@@ -37,3 +37,12 @@
 
 !/*.cydsn/TopDesign/
 *.cysch
+
+#programas a ignorar:
+CY8C38 Family Data Sheet.pdf
+Frecuenciometro-con-PSoC-5-master.zip
+NHD-12864WG-BTFH-VN.pdf
+PSoC Creator System Reference Guide.pdf
+PSoC5LP.pptx
+Paginas PSoCs.txt
+
