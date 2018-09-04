@@ -1,0 +1,6 @@
+D:\Mis Documentos\SEBASTIAN\embebidos I\Frecuenciometro-con-PSoC-5-Contador\Medidor_de_Frecuencia.cydsn\Medidor_de_Frecuencia.cyprj|2ca6ae32-911e-4a37-936a-8384aaa1ec3b
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|a59242dd-bdb2-4ab4-a2db-498f4e28d597
+C:\Users\Dell\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|2c728625-9764-4f48-bc02-2e8602aa804a
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|7dfae18f-ae72-4470-935f-f6828486d9ff
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|eccb21b1-cdb8-4139-b010-06ec6cec8b9c
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|4dc58f9b-dcc1-4334-a695-25d18f68e2be
