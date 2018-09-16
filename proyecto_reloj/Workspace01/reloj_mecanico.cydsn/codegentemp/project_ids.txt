@@ -1,0 +1,6 @@
+D:\Mis Documentos\SEBASTIAN\embebidos I\proyecto_reloj\Workspace01\reloj_mecanico.cydsn\reloj_mecanico.cyprj|e6c0281c-b85f-41a6-bd97-80aab2862f97
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|34091a3b-b60b-4b1e-bbb6-3a764f480874
+C:\Users\Dell\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|768c9263-f8f4-4842-8cae-2ce0792f0f5a
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|c16464f6-eae5-4051-af93-d27c59803b3a
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|8fe5975e-c28b-4e72-a1ca-b30afff273e6
+C:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|6e593db5-f695-4b47-9320-59451368c680

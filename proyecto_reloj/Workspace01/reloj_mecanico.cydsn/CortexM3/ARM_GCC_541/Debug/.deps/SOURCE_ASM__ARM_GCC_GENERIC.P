@@ -1,0 +1,10 @@
+D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/CortexM3/ARM_GCC_541/Debug/CyBootAsmGnu.o : D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/CyBootAsmGnu.s D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/cydevicegnu.inc D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/cydevicegnu_trm.inc D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/cyfittergnu.inc 
+
+D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/CyBootAsmGnu.s : 
+
+D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/cydevicegnu.inc : 
+
+D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/cydevicegnu_trm.inc : 
+
+D:/Mis\ Documentos/SEBASTIAN/embebidos\ I/proyecto_reloj/Workspace01/reloj_mecanico.cydsn/Generated_Source/PSoC5/cyfittergnu.inc : 
+
