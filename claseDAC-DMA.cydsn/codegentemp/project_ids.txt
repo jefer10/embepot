@@ -1,0 +1,17 @@
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\1-intro.cydsn\1-intro.cyprj|976795ce-4512-48bc-9319-57b34309d6a9
+D:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyAnnotationLibrary\CyAnnotationLibrary.cylib\CyAnnotationLibrary.cyprj|6e6338af-e5dc-4e2e-99b5-e2fb2d339e78
+D:\Documentos\GITUD\Documents\PSoC Creator\4.2\Downloads ( 4.2).cylib\Downloads ( 4.2).cyprj|07d0f52c-eb3e-49f2-832e-24e89fff34e0
+D:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibraryupdates\CyComponentLibraryUpdates.cylib\CyComponentLibraryUpdates.cyprj|eba35999-9b12-4d04-9272-b1237c7a64bb
+D:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CyComponentLibrary.cyprj|f8cc69ec-3148-4f34-b6e2-9ddda09aeb84
+D:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\cyprimitives\CyPrimitives.cylib\CyPrimitives.cyprj|382afaf4-8577-467f-9d4a-57c215235700
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\3-timers.cydsn\3-timers.cyprj|536929dd-d3b7-4764-a2fd-e1e943b8a53a
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\clase333.cydsn\clase333.cyprj|4ba4145c-a03a-4067-a577-0d9611ab0c84
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\con-interrupts.cydsn\con-interrupts.cyprj|74c0845a-7536-41a5-8be5-910f45794542
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\sin-interrupts.cydsn\sin-interrupts.cyprj|407fed4f-7ec8-43fa-9ec7-309b54616d68
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\PRSExample01.cydsn\PRSExample01.cyprj|53130c6d-d4f5-4c57-8e69-ec1d2bfe0f8b
+D:\Program Files (x86)\Cypress\PSoC Creator\4.2\PSoC Creator\psoc\content\default\CyReferenceLibrary\CyReferenceLibrary.cylib\CyReferenceLibrary.cyprj|47a2aeac-ce7a-41e2-aa2d-9d0386e741de
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\claseDAC.cydsn\claseDAC.cyprj|25509784-066e-407e-a126-490dfca52934
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\claseDAC-DMA.cydsn\claseDAC-DMA.cyprj|c4008b21-60ee-4ec7-b5e2-420305bb73c7
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\CapSense.cydsn\CapSense.cyprj|78e8cc7c-a625-4115-a916-a62064f121d7
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\UART.cydsn\UART.cyprj|4a8c426d-8e4e-4082-a5c5-49b6c49b86fc
+D:\Documentos\GITUD\Documents\PSoC Creator\clases\I2C.cydsn\I2C.cyprj|bd01860f-619b-4ef7-83a8-01e99c170799

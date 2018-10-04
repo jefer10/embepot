@@ -1,0 +1,1110 @@
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"main.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	__aeabi_i2d
+  20              		.global	__aeabi_dmul
+  21              		.global	__aeabi_dadd
+  22              		.global	__aeabi_d2uiz
+  23              		.section	.text.main,"ax",%progbits
+  24              		.align	2
+  25              		.global	main
+  26              		.thumb
+  27              		.thumb_func
+  28              		.type	main, %function
+  29              	main:
+  30              	.LFB63:
+  31              		.file 1 "main.c"
+   1:main.c        **** /* ========================================
+   2:main.c        ****  *
+   3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
+   4:main.c        ****  * All Rights Reserved
+   5:main.c        ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:main.c        ****  *
+   7:main.c        ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:main.c        ****  * WHICH IS THE PROPERTY OF your company.
+   9:main.c        ****  *
+  10:main.c        ****  * ========================================
+  11:main.c        **** Amplitud con el potenciometro
+  12:main.c        **** Cambio de frecuencia con pulsadores
+  13:main.c        **** 
+  14:main.c        **** Mecánica:
+  15:main.c        **** - Hacer el periodo del Timer igual al de 256 veces la frecuencia deseada (para las 256 muestras)
+  16:main.c        **** - En cada flanco de subida del timer el DAC se actualiza con el registro de control
+  17:main.c        **** - En cada flanco de bajada del timer se actualiza el registro de control, y se incrementa el indice
+  18:main.c        **** - Cada medio segundo se hace una conversion ADC. Una vez completada, se recalcula toda la tabla
+  19:main.c        **** - 
+  20:main.c        **** UPD_DAC lee el siguiente valor de la tabla y lo escribe en el DAC
+  21:main.c        **** 
+  22:main.c        **** */
+  23:main.c        **** #include "project.h"
+  24:main.c        **** #include <math.h>
+  25:main.c        **** 
+  26:main.c        **** #define PI 3.14159265
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 2
+
+
+  27:main.c        **** 
+  28:main.c        **** /* Defines for DMA */
+  29:main.c        **** #define DMA_BYTES_PER_BURST 1
+  30:main.c        **** #define DMA_REQUEST_PER_BURST 1
+  31:main.c        **** #define DMA_SRC_BASE (CYDEV_SRAM_BASE)
+  32:main.c        **** #define DMA_DST_BASE (CYDEV_PERIPH_BASE)
+  33:main.c        **** 
+  34:main.c        **** CYCODE char tabla[256];
+  35:main.c        **** 
+  36:main.c        **** int main(void)
+  37:main.c        **** {
+  32              		.loc 1 37 0
+  33              		.cfi_startproc
+  34              		@ args = 0, pretend = 0, frame = 0
+  35              		@ frame_needed = 0, uses_anonymous_args = 0
+  36 0000 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+  37              		.cfi_def_cfa_offset 32
+  38              		.cfi_offset 3, -32
+  39              		.cfi_offset 4, -28
+  40              		.cfi_offset 5, -24
+  41              		.cfi_offset 6, -20
+  42              		.cfi_offset 7, -16
+  43              		.cfi_offset 8, -12
+  44              		.cfi_offset 9, -8
+  45              		.cfi_offset 14, -4
+  38:main.c        ****     int i;
+  39:main.c        ****     
+  40:main.c        **** 
+  41:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  46              		.loc 1 41 0
+  47              		.syntax unified
+  48              	@ 41 "main.c" 1
+  49 0004 62B6     		CPSIE   i
+  50              	@ 0 "" 2
+  51              	.LVL0:
+  42:main.c        ****     for (i=0;i<512;i++)
+  52              		.loc 1 42 0
+  53              		.thumb
+  54              		.syntax unified
+  55 0006 0024     		movs	r4, #0
+  56 0008 3CE0     		b	.L2
+  57              	.LVL1:
+  58              	.L3:
+  43:main.c        ****         tabla[i]=(char)((sin(2.0*PI*i/512.0)+1)*100.0/2.0+(sin(2.0*PI*i/256.0)+1)*100.0/2.0);
+  59              		.loc 1 43 0 discriminator 3
+  60 000a 2046     		mov	r0, r4
+  61 000c FFF7FEFF 		bl	__aeabi_i2d
+  62              	.LVL2:
+  63 0010 31A3     		adr	r3, .L6
+  64 0012 D3E90023 		ldrd	r2, [r3]
+  65 0016 FFF7FEFF 		bl	__aeabi_dmul
+  66              	.LVL3:
+  67 001a 8046     		mov	r8, r0
+  68 001c 8946     		mov	r9, r1
+  69 001e 0022     		movs	r2, #0
+  70 0020 2F4B     		ldr	r3, .L6+8
+  71 0022 FFF7FEFF 		bl	__aeabi_dmul
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 3
+
+
+  72              	.LVL4:
+  73 0026 FFF7FEFF 		bl	sin
+  74              	.LVL5:
+  75 002a 0022     		movs	r2, #0
+  76 002c 2D4B     		ldr	r3, .L6+12
+  77 002e FFF7FEFF 		bl	__aeabi_dadd
+  78              	.LVL6:
+  79 0032 0022     		movs	r2, #0
+  80 0034 2C4B     		ldr	r3, .L6+16
+  81 0036 FFF7FEFF 		bl	__aeabi_dmul
+  82              	.LVL7:
+  83 003a 0022     		movs	r2, #0
+  84 003c 2B4B     		ldr	r3, .L6+20
+  85 003e FFF7FEFF 		bl	__aeabi_dmul
+  86              	.LVL8:
+  87 0042 0646     		mov	r6, r0
+  88 0044 0F46     		mov	r7, r1
+  89 0046 0022     		movs	r2, #0
+  90 0048 294B     		ldr	r3, .L6+24
+  91 004a 4046     		mov	r0, r8
+  92 004c 4946     		mov	r1, r9
+  93 004e FFF7FEFF 		bl	__aeabi_dmul
+  94              	.LVL9:
+  95 0052 FFF7FEFF 		bl	sin
+  96              	.LVL10:
+  97 0056 0022     		movs	r2, #0
+  98 0058 224B     		ldr	r3, .L6+12
+  99 005a FFF7FEFF 		bl	__aeabi_dadd
+ 100              	.LVL11:
+ 101 005e 0022     		movs	r2, #0
+ 102 0060 214B     		ldr	r3, .L6+16
+ 103 0062 FFF7FEFF 		bl	__aeabi_dmul
+ 104              	.LVL12:
+ 105 0066 0022     		movs	r2, #0
+ 106 0068 204B     		ldr	r3, .L6+20
+ 107 006a FFF7FEFF 		bl	__aeabi_dmul
+ 108              	.LVL13:
+ 109 006e 0246     		mov	r2, r0
+ 110 0070 0B46     		mov	r3, r1
+ 111 0072 3046     		mov	r0, r6
+ 112 0074 3946     		mov	r1, r7
+ 113 0076 FFF7FEFF 		bl	__aeabi_dadd
+ 114              	.LVL14:
+ 115 007a FFF7FEFF 		bl	__aeabi_d2uiz
+ 116              	.LVL15:
+ 117 007e 1D4B     		ldr	r3, .L6+28
+ 118 0080 1855     		strb	r0, [r3, r4]
+  42:main.c        ****     for (i=0;i<512;i++)
+ 119              		.loc 1 42 0 discriminator 3
+ 120 0082 0134     		adds	r4, r4, #1
+ 121              	.LVL16:
+ 122              	.L2:
+  42:main.c        ****     for (i=0;i<512;i++)
+ 123              		.loc 1 42 0 is_stmt 0 discriminator 1
+ 124 0084 B4F5007F 		cmp	r4, #512
+ 125 0088 BFDB     		blt	.L3
+  44:main.c        **** 
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 4
+
+
+  45:main.c        ****     /* Variable declarations for DMA */
+  46:main.c        ****     /* Move these variable declarations to the top of the function */
+  47:main.c        ****     uint8 DMA_Chan;
+  48:main.c        ****     uint8 DMA_TD[1];
+  49:main.c        **** 
+  50:main.c        ****     /* DMA Configuration for DMA */
+  51:main.c        ****     DMA_Chan = DMA_DmaInitialize(DMA_BYTES_PER_BURST, DMA_REQUEST_PER_BURST, 
+ 126              		.loc 1 51 0 is_stmt 1
+ 127 008a 4FF48043 		mov	r3, #16384
+ 128 008e 41F6FF72 		movw	r2, #8191
+ 129 0092 0121     		movs	r1, #1
+ 130 0094 0846     		mov	r0, r1
+ 131 0096 FFF7FEFF 		bl	DMA_DmaInitialize
+ 132              	.LVL17:
+ 133 009a 0546     		mov	r5, r0
+ 134              	.LVL18:
+  52:main.c        ****     HI16(DMA_SRC_BASE), HI16(DMA_DST_BASE));
+  53:main.c        ****     DMA_TD[0] = CyDmaTdAllocate();
+ 135              		.loc 1 53 0
+ 136 009c FFF7FEFF 		bl	CyDmaTdAllocate
+ 137              	.LVL19:
+ 138 00a0 0446     		mov	r4, r0
+ 139              	.LVL20:
+  54:main.c        ****     CyDmaTdSetConfiguration(DMA_TD[0], 512, DMA_TD[0], CY_DMA_TD_INC_SRC_ADR);
+ 140              		.loc 1 54 0
+ 141 00a2 0123     		movs	r3, #1
+ 142 00a4 0246     		mov	r2, r0
+ 143 00a6 4FF40071 		mov	r1, #512
+ 144 00aa FFF7FEFF 		bl	CyDmaTdSetConfiguration
+ 145              	.LVL21:
+  55:main.c        ****     CyDmaTdSetAddress(DMA_TD[0], LO16((uint32)tabla), LO16((uint32)DAC_Data_PTR));
+ 146              		.loc 1 55 0
+ 147 00ae 45F68332 		movw	r2, #23427
+ 148 00b2 1049     		ldr	r1, .L6+28
+ 149 00b4 89B2     		uxth	r1, r1
+ 150 00b6 2046     		mov	r0, r4
+ 151 00b8 FFF7FEFF 		bl	CyDmaTdSetAddress
+ 152              	.LVL22:
+  56:main.c        ****     CyDmaChSetInitialTd(DMA_Chan, DMA_TD[0]);
+ 153              		.loc 1 56 0
+ 154 00bc 2146     		mov	r1, r4
+ 155 00be 2846     		mov	r0, r5
+ 156 00c0 FFF7FEFF 		bl	CyDmaChSetInitialTd
+ 157              	.LVL23:
+  57:main.c        ****     CyDmaChEnable(DMA_Chan, 1);
+ 158              		.loc 1 57 0
+ 159 00c4 0121     		movs	r1, #1
+ 160 00c6 2846     		mov	r0, r5
+ 161 00c8 FFF7FEFF 		bl	CyDmaChEnable
+ 162              	.LVL24:
+  58:main.c        **** 
+  59:main.c        ****     DAC_Start();
+ 163              		.loc 1 59 0
+ 164 00cc FFF7FEFF 		bl	DAC_Start
+ 165              	.LVL25:
+ 166              	.L4:
+ 167 00d0 FEE7     		b	.L4
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 5
+
+
+ 168              	.L7:
+ 169 00d2 00BFAFF3 		.align	3
+ 169      0080
+ 170              	.L6:
+ 171 00d8 F1D4C853 		.word	1405670641
+ 172 00dc FB211940 		.word	1075388923
+ 173 00e0 0000603F 		.word	1063256064
+ 174 00e4 0000F03F 		.word	1072693248
+ 175 00e8 00005940 		.word	1079574528
+ 176 00ec 0000E03F 		.word	1071644672
+ 177 00f0 0000703F 		.word	1064304640
+ 178 00f4 00000000 		.word	tabla
+ 179              		.cfi_endproc
+ 180              	.LFE63:
+ 181              		.size	main, .-main
+ 182              		.comm	tabla,256,4
+ 183              		.text
+ 184              	.Letext0:
+ 185              		.file 2 "d:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 186              		.file 3 "d:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 187              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 188              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 189              		.file 6 "Generated_Source\\PSoC5/DMA_dma.h"
+ 190              		.file 7 "Generated_Source\\PSoC5/CYDMAC.H"
+ 191              		.file 8 "Generated_Source\\PSoC5/DAC.h"
+ 192              		.file 9 "d:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 193              		.section	.debug_info,"",%progbits
+ 194              	.Ldebug_info0:
+ 195 0000 76020000 		.4byte	0x276
+ 196 0004 0400     		.2byte	0x4
+ 197 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 198 000a 04       		.byte	0x4
+ 199 000b 01       		.uleb128 0x1
+ 200 000c 79000000 		.4byte	.LASF30
+ 201 0010 0C       		.byte	0xc
+ 202 0011 13020000 		.4byte	.LASF31
+ 203 0015 AF010000 		.4byte	.LASF32
+ 204 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 205 001d 00000000 		.4byte	0
+ 206 0021 00000000 		.4byte	.Ldebug_line0
+ 207 0025 02       		.uleb128 0x2
+ 208 0026 01       		.byte	0x1
+ 209 0027 06       		.byte	0x6
+ 210 0028 44020000 		.4byte	.LASF0
+ 211 002c 02       		.uleb128 0x2
+ 212 002d 01       		.byte	0x1
+ 213 002e 08       		.byte	0x8
+ 214 002f 6B000000 		.4byte	.LASF1
+ 215 0033 02       		.uleb128 0x2
+ 216 0034 02       		.byte	0x2
+ 217 0035 05       		.byte	0x5
+ 218 0036 1F020000 		.4byte	.LASF2
+ 219 003a 02       		.uleb128 0x2
+ 220 003b 02       		.byte	0x2
+ 221 003c 07       		.byte	0x7
+ 222 003d 2E000000 		.4byte	.LASF3
+ 223 0041 03       		.uleb128 0x3
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 6
+
+
+ 224 0042 00000000 		.4byte	.LASF9
+ 225 0046 02       		.byte	0x2
+ 226 0047 3F       		.byte	0x3f
+ 227 0048 4C000000 		.4byte	0x4c
+ 228 004c 02       		.uleb128 0x2
+ 229 004d 04       		.byte	0x4
+ 230 004e 05       		.byte	0x5
+ 231 004f 2F020000 		.4byte	.LASF4
+ 232 0053 02       		.uleb128 0x2
+ 233 0054 04       		.byte	0x4
+ 234 0055 07       		.byte	0x7
+ 235 0056 24010000 		.4byte	.LASF5
+ 236 005a 02       		.uleb128 0x2
+ 237 005b 08       		.byte	0x8
+ 238 005c 05       		.byte	0x5
+ 239 005d 05020000 		.4byte	.LASF6
+ 240 0061 02       		.uleb128 0x2
+ 241 0062 08       		.byte	0x8
+ 242 0063 07       		.byte	0x7
+ 243 0064 98010000 		.4byte	.LASF7
+ 244 0068 04       		.uleb128 0x4
+ 245 0069 04       		.byte	0x4
+ 246 006a 05       		.byte	0x5
+ 247 006b 696E7400 		.ascii	"int\000"
+ 248 006f 02       		.uleb128 0x2
+ 249 0070 04       		.byte	0x4
+ 250 0071 07       		.byte	0x7
+ 251 0072 8B010000 		.4byte	.LASF8
+ 252 0076 03       		.uleb128 0x3
+ 253 0077 F4010000 		.4byte	.LASF10
+ 254 007b 03       		.byte	0x3
+ 255 007c 2C       		.byte	0x2c
+ 256 007d 41000000 		.4byte	0x41
+ 257 0081 05       		.uleb128 0x5
+ 258 0082 29020000 		.4byte	.LASF11
+ 259 0086 04       		.byte	0x4
+ 260 0087 E401     		.2byte	0x1e4
+ 261 0089 2C000000 		.4byte	0x2c
+ 262 008d 05       		.uleb128 0x5
+ 263 008e 74010000 		.4byte	.LASF12
+ 264 0092 04       		.byte	0x4
+ 265 0093 E501     		.2byte	0x1e5
+ 266 0095 3A000000 		.4byte	0x3a
+ 267 0099 05       		.uleb128 0x5
+ 268 009a 84010000 		.4byte	.LASF13
+ 269 009e 04       		.byte	0x4
+ 270 009f E601     		.2byte	0x1e6
+ 271 00a1 53000000 		.4byte	0x53
+ 272 00a5 02       		.uleb128 0x2
+ 273 00a6 04       		.byte	0x4
+ 274 00a7 04       		.byte	0x4
+ 275 00a8 65000000 		.4byte	.LASF14
+ 276 00ac 02       		.uleb128 0x2
+ 277 00ad 08       		.byte	0x8
+ 278 00ae 04       		.byte	0x4
+ 279 00af 5A010000 		.4byte	.LASF15
+ 280 00b3 02       		.uleb128 0x2
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 7
+
+
+ 281 00b4 01       		.byte	0x1
+ 282 00b5 08       		.byte	0x8
+ 283 00b6 1A020000 		.4byte	.LASF16
+ 284 00ba 05       		.uleb128 0x5
+ 285 00bb 07010000 		.4byte	.LASF17
+ 286 00bf 04       		.byte	0x4
+ 287 00c0 8E02     		.2byte	0x28e
+ 288 00c2 C6000000 		.4byte	0xc6
+ 289 00c6 06       		.uleb128 0x6
+ 290 00c7 81000000 		.4byte	0x81
+ 291 00cb 02       		.uleb128 0x2
+ 292 00cc 08       		.byte	0x8
+ 293 00cd 04       		.byte	0x4
+ 294 00ce 38020000 		.4byte	.LASF18
+ 295 00d2 02       		.uleb128 0x2
+ 296 00d3 04       		.byte	0x4
+ 297 00d4 07       		.byte	0x7
+ 298 00d5 FC010000 		.4byte	.LASF19
+ 299 00d9 07       		.uleb128 0x7
+ 300 00da 61010000 		.4byte	.LASF33
+ 301 00de 01       		.byte	0x1
+ 302 00df 24       		.byte	0x24
+ 303 00e0 68000000 		.4byte	0x68
+ 304 00e4 00000000 		.4byte	.LFB63
+ 305 00e8 F8000000 		.4byte	.LFE63-.LFB63
+ 306 00ec 01       		.uleb128 0x1
+ 307 00ed 9C       		.byte	0x9c
+ 308 00ee DF010000 		.4byte	0x1df
+ 309 00f2 08       		.uleb128 0x8
+ 310 00f3 6900     		.ascii	"i\000"
+ 311 00f5 01       		.byte	0x1
+ 312 00f6 26       		.byte	0x26
+ 313 00f7 68000000 		.4byte	0x68
+ 314 00fb 00000000 		.4byte	.LLST0
+ 315 00ff 09       		.uleb128 0x9
+ 316 0100 7B010000 		.4byte	.LASF20
+ 317 0104 01       		.byte	0x1
+ 318 0105 2F       		.byte	0x2f
+ 319 0106 81000000 		.4byte	0x81
+ 320 010a 01       		.uleb128 0x1
+ 321 010b 55       		.byte	0x55
+ 322 010c 0A       		.uleb128 0xa
+ 323 010d 3C010000 		.4byte	.LASF34
+ 324 0111 01       		.byte	0x1
+ 325 0112 30       		.byte	0x30
+ 326 0113 DF010000 		.4byte	0x1df
+ 327 0117 0B       		.uleb128 0xb
+ 328 0118 2A000000 		.4byte	.LVL5
+ 329 011c 21020000 		.4byte	0x221
+ 330 0120 0B       		.uleb128 0xb
+ 331 0121 56000000 		.4byte	.LVL10
+ 332 0125 21020000 		.4byte	0x221
+ 333 0129 0C       		.uleb128 0xc
+ 334 012a 9A000000 		.4byte	.LVL17
+ 335 012e 2C020000 		.4byte	0x22c
+ 336 0132 4F010000 		.4byte	0x14f
+ 337 0136 0D       		.uleb128 0xd
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 8
+
+
+ 338 0137 01       		.uleb128 0x1
+ 339 0138 50       		.byte	0x50
+ 340 0139 01       		.uleb128 0x1
+ 341 013a 31       		.byte	0x31
+ 342 013b 0D       		.uleb128 0xd
+ 343 013c 01       		.uleb128 0x1
+ 344 013d 51       		.byte	0x51
+ 345 013e 01       		.uleb128 0x1
+ 346 013f 31       		.byte	0x31
+ 347 0140 0D       		.uleb128 0xd
+ 348 0141 01       		.uleb128 0x1
+ 349 0142 52       		.byte	0x52
+ 350 0143 03       		.uleb128 0x3
+ 351 0144 0A       		.byte	0xa
+ 352 0145 FF1F     		.2byte	0x1fff
+ 353 0147 0D       		.uleb128 0xd
+ 354 0148 01       		.uleb128 0x1
+ 355 0149 53       		.byte	0x53
+ 356 014a 03       		.uleb128 0x3
+ 357 014b 0A       		.byte	0xa
+ 358 014c 0040     		.2byte	0x4000
+ 359 014e 00       		.byte	0
+ 360 014f 0B       		.uleb128 0xb
+ 361 0150 A0000000 		.4byte	.LVL19
+ 362 0154 37020000 		.4byte	0x237
+ 363 0158 0C       		.uleb128 0xc
+ 364 0159 AE000000 		.4byte	.LVL21
+ 365 015d 42020000 		.4byte	0x242
+ 366 0161 7E010000 		.4byte	0x17e
+ 367 0165 0D       		.uleb128 0xd
+ 368 0166 01       		.uleb128 0x1
+ 369 0167 50       		.byte	0x50
+ 370 0168 02       		.uleb128 0x2
+ 371 0169 74       		.byte	0x74
+ 372 016a 00       		.sleb128 0
+ 373 016b 0D       		.uleb128 0xd
+ 374 016c 01       		.uleb128 0x1
+ 375 016d 51       		.byte	0x51
+ 376 016e 03       		.uleb128 0x3
+ 377 016f 0A       		.byte	0xa
+ 378 0170 0002     		.2byte	0x200
+ 379 0172 0D       		.uleb128 0xd
+ 380 0173 01       		.uleb128 0x1
+ 381 0174 52       		.byte	0x52
+ 382 0175 02       		.uleb128 0x2
+ 383 0176 74       		.byte	0x74
+ 384 0177 00       		.sleb128 0
+ 385 0178 0D       		.uleb128 0xd
+ 386 0179 01       		.uleb128 0x1
+ 387 017a 53       		.byte	0x53
+ 388 017b 01       		.uleb128 0x1
+ 389 017c 31       		.byte	0x31
+ 390 017d 00       		.byte	0
+ 391 017e 0C       		.uleb128 0xc
+ 392 017f BC000000 		.4byte	.LVL22
+ 393 0183 4D020000 		.4byte	0x24d
+ 394 0187 A2010000 		.4byte	0x1a2
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 9
+
+
+ 395 018b 0D       		.uleb128 0xd
+ 396 018c 01       		.uleb128 0x1
+ 397 018d 50       		.byte	0x50
+ 398 018e 02       		.uleb128 0x2
+ 399 018f 74       		.byte	0x74
+ 400 0190 00       		.sleb128 0
+ 401 0191 0D       		.uleb128 0xd
+ 402 0192 01       		.uleb128 0x1
+ 403 0193 51       		.byte	0x51
+ 404 0194 05       		.uleb128 0x5
+ 405 0195 03       		.byte	0x3
+ 406 0196 00000000 		.4byte	tabla
+ 407 019a 0D       		.uleb128 0xd
+ 408 019b 01       		.uleb128 0x1
+ 409 019c 52       		.byte	0x52
+ 410 019d 03       		.uleb128 0x3
+ 411 019e 0A       		.byte	0xa
+ 412 019f 835B     		.2byte	0x5b83
+ 413 01a1 00       		.byte	0
+ 414 01a2 0C       		.uleb128 0xc
+ 415 01a3 C4000000 		.4byte	.LVL23
+ 416 01a7 58020000 		.4byte	0x258
+ 417 01ab BC010000 		.4byte	0x1bc
+ 418 01af 0D       		.uleb128 0xd
+ 419 01b0 01       		.uleb128 0x1
+ 420 01b1 50       		.byte	0x50
+ 421 01b2 02       		.uleb128 0x2
+ 422 01b3 75       		.byte	0x75
+ 423 01b4 00       		.sleb128 0
+ 424 01b5 0D       		.uleb128 0xd
+ 425 01b6 01       		.uleb128 0x1
+ 426 01b7 51       		.byte	0x51
+ 427 01b8 02       		.uleb128 0x2
+ 428 01b9 74       		.byte	0x74
+ 429 01ba 00       		.sleb128 0
+ 430 01bb 00       		.byte	0
+ 431 01bc 0C       		.uleb128 0xc
+ 432 01bd CC000000 		.4byte	.LVL24
+ 433 01c1 63020000 		.4byte	0x263
+ 434 01c5 D5010000 		.4byte	0x1d5
+ 435 01c9 0D       		.uleb128 0xd
+ 436 01ca 01       		.uleb128 0x1
+ 437 01cb 50       		.byte	0x50
+ 438 01cc 02       		.uleb128 0x2
+ 439 01cd 75       		.byte	0x75
+ 440 01ce 00       		.sleb128 0
+ 441 01cf 0D       		.uleb128 0xd
+ 442 01d0 01       		.uleb128 0x1
+ 443 01d1 51       		.byte	0x51
+ 444 01d2 01       		.uleb128 0x1
+ 445 01d3 31       		.byte	0x31
+ 446 01d4 00       		.byte	0
+ 447 01d5 0B       		.uleb128 0xb
+ 448 01d6 D0000000 		.4byte	.LVL25
+ 449 01da 6E020000 		.4byte	0x26e
+ 450 01de 00       		.byte	0
+ 451 01df 0E       		.uleb128 0xe
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 10
+
+
+ 452 01e0 81000000 		.4byte	0x81
+ 453 01e4 EF010000 		.4byte	0x1ef
+ 454 01e8 0F       		.uleb128 0xf
+ 455 01e9 D2000000 		.4byte	0xd2
+ 456 01ed 00       		.byte	0
+ 457 01ee 00       		.byte	0
+ 458 01ef 10       		.uleb128 0x10
+ 459 01f0 43010000 		.4byte	.LASF21
+ 460 01f4 05       		.byte	0x5
+ 461 01f5 1207     		.2byte	0x712
+ 462 01f7 FB010000 		.4byte	0x1fb
+ 463 01fb 06       		.uleb128 0x6
+ 464 01fc 76000000 		.4byte	0x76
+ 465 0200 0E       		.uleb128 0xe
+ 466 0201 B3000000 		.4byte	0xb3
+ 467 0205 10020000 		.4byte	0x210
+ 468 0209 0F       		.uleb128 0xf
+ 469 020a D2000000 		.4byte	0xd2
+ 470 020e FF       		.byte	0xff
+ 471 020f 00       		.byte	0
+ 472 0210 11       		.uleb128 0x11
+ 473 0211 36010000 		.4byte	.LASF22
+ 474 0215 01       		.byte	0x1
+ 475 0216 22       		.byte	0x22
+ 476 0217 00020000 		.4byte	0x200
+ 477 021b 05       		.uleb128 0x5
+ 478 021c 03       		.byte	0x3
+ 479 021d 00000000 		.4byte	tabla
+ 480 0221 12       		.uleb128 0x12
+ 481 0222 73696E00 		.ascii	"sin\000"
+ 482 0226 73696E00 		.ascii	"sin\000"
+ 483 022a 09       		.byte	0x9
+ 484 022b 6F       		.byte	0x6f
+ 485 022c 13       		.uleb128 0x13
+ 486 022d 1C000000 		.4byte	.LASF23
+ 487 0231 1C000000 		.4byte	.LASF23
+ 488 0235 06       		.byte	0x6
+ 489 0236 1E       		.byte	0x1e
+ 490 0237 13       		.uleb128 0x13
+ 491 0238 55000000 		.4byte	.LASF24
+ 492 023c 55000000 		.4byte	.LASF24
+ 493 0240 07       		.byte	0x7
+ 494 0241 38       		.byte	0x38
+ 495 0242 13       		.uleb128 0x13
+ 496 0243 0C010000 		.4byte	.LASF25
+ 497 0247 0C010000 		.4byte	.LASF25
+ 498 024b 07       		.byte	0x7
+ 499 024c 3B       		.byte	0x3b
+ 500 024d 13       		.uleb128 0x13
+ 501 024e 0A000000 		.4byte	.LASF26
+ 502 0252 0A000000 		.4byte	.LASF26
+ 503 0256 07       		.byte	0x7
+ 504 0257 3F       		.byte	0x3f
+ 505 0258 13       		.uleb128 0x13
+ 506 0259 41000000 		.4byte	.LASF27
+ 507 025d 41000000 		.4byte	.LASF27
+ 508 0261 07       		.byte	0x7
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 11
+
+
+ 509 0262 2F       		.byte	0x2f
+ 510 0263 13       		.uleb128 0x13
+ 511 0264 66010000 		.4byte	.LASF28
+ 512 0268 66010000 		.4byte	.LASF28
+ 513 026c 07       		.byte	0x7
+ 514 026d 29       		.byte	0x29
+ 515 026e 13       		.uleb128 0x13
+ 516 026f 50010000 		.4byte	.LASF29
+ 517 0273 50010000 		.4byte	.LASF29
+ 518 0277 08       		.byte	0x8
+ 519 0278 33       		.byte	0x33
+ 520 0279 00       		.byte	0
+ 521              		.section	.debug_abbrev,"",%progbits
+ 522              	.Ldebug_abbrev0:
+ 523 0000 01       		.uleb128 0x1
+ 524 0001 11       		.uleb128 0x11
+ 525 0002 01       		.byte	0x1
+ 526 0003 25       		.uleb128 0x25
+ 527 0004 0E       		.uleb128 0xe
+ 528 0005 13       		.uleb128 0x13
+ 529 0006 0B       		.uleb128 0xb
+ 530 0007 03       		.uleb128 0x3
+ 531 0008 0E       		.uleb128 0xe
+ 532 0009 1B       		.uleb128 0x1b
+ 533 000a 0E       		.uleb128 0xe
+ 534 000b 55       		.uleb128 0x55
+ 535 000c 17       		.uleb128 0x17
+ 536 000d 11       		.uleb128 0x11
+ 537 000e 01       		.uleb128 0x1
+ 538 000f 10       		.uleb128 0x10
+ 539 0010 17       		.uleb128 0x17
+ 540 0011 00       		.byte	0
+ 541 0012 00       		.byte	0
+ 542 0013 02       		.uleb128 0x2
+ 543 0014 24       		.uleb128 0x24
+ 544 0015 00       		.byte	0
+ 545 0016 0B       		.uleb128 0xb
+ 546 0017 0B       		.uleb128 0xb
+ 547 0018 3E       		.uleb128 0x3e
+ 548 0019 0B       		.uleb128 0xb
+ 549 001a 03       		.uleb128 0x3
+ 550 001b 0E       		.uleb128 0xe
+ 551 001c 00       		.byte	0
+ 552 001d 00       		.byte	0
+ 553 001e 03       		.uleb128 0x3
+ 554 001f 16       		.uleb128 0x16
+ 555 0020 00       		.byte	0
+ 556 0021 03       		.uleb128 0x3
+ 557 0022 0E       		.uleb128 0xe
+ 558 0023 3A       		.uleb128 0x3a
+ 559 0024 0B       		.uleb128 0xb
+ 560 0025 3B       		.uleb128 0x3b
+ 561 0026 0B       		.uleb128 0xb
+ 562 0027 49       		.uleb128 0x49
+ 563 0028 13       		.uleb128 0x13
+ 564 0029 00       		.byte	0
+ 565 002a 00       		.byte	0
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 12
+
+
+ 566 002b 04       		.uleb128 0x4
+ 567 002c 24       		.uleb128 0x24
+ 568 002d 00       		.byte	0
+ 569 002e 0B       		.uleb128 0xb
+ 570 002f 0B       		.uleb128 0xb
+ 571 0030 3E       		.uleb128 0x3e
+ 572 0031 0B       		.uleb128 0xb
+ 573 0032 03       		.uleb128 0x3
+ 574 0033 08       		.uleb128 0x8
+ 575 0034 00       		.byte	0
+ 576 0035 00       		.byte	0
+ 577 0036 05       		.uleb128 0x5
+ 578 0037 16       		.uleb128 0x16
+ 579 0038 00       		.byte	0
+ 580 0039 03       		.uleb128 0x3
+ 581 003a 0E       		.uleb128 0xe
+ 582 003b 3A       		.uleb128 0x3a
+ 583 003c 0B       		.uleb128 0xb
+ 584 003d 3B       		.uleb128 0x3b
+ 585 003e 05       		.uleb128 0x5
+ 586 003f 49       		.uleb128 0x49
+ 587 0040 13       		.uleb128 0x13
+ 588 0041 00       		.byte	0
+ 589 0042 00       		.byte	0
+ 590 0043 06       		.uleb128 0x6
+ 591 0044 35       		.uleb128 0x35
+ 592 0045 00       		.byte	0
+ 593 0046 49       		.uleb128 0x49
+ 594 0047 13       		.uleb128 0x13
+ 595 0048 00       		.byte	0
+ 596 0049 00       		.byte	0
+ 597 004a 07       		.uleb128 0x7
+ 598 004b 2E       		.uleb128 0x2e
+ 599 004c 01       		.byte	0x1
+ 600 004d 3F       		.uleb128 0x3f
+ 601 004e 19       		.uleb128 0x19
+ 602 004f 03       		.uleb128 0x3
+ 603 0050 0E       		.uleb128 0xe
+ 604 0051 3A       		.uleb128 0x3a
+ 605 0052 0B       		.uleb128 0xb
+ 606 0053 3B       		.uleb128 0x3b
+ 607 0054 0B       		.uleb128 0xb
+ 608 0055 27       		.uleb128 0x27
+ 609 0056 19       		.uleb128 0x19
+ 610 0057 49       		.uleb128 0x49
+ 611 0058 13       		.uleb128 0x13
+ 612 0059 8701     		.uleb128 0x87
+ 613 005b 19       		.uleb128 0x19
+ 614 005c 11       		.uleb128 0x11
+ 615 005d 01       		.uleb128 0x1
+ 616 005e 12       		.uleb128 0x12
+ 617 005f 06       		.uleb128 0x6
+ 618 0060 40       		.uleb128 0x40
+ 619 0061 18       		.uleb128 0x18
+ 620 0062 9642     		.uleb128 0x2116
+ 621 0064 19       		.uleb128 0x19
+ 622 0065 01       		.uleb128 0x1
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 13
+
+
+ 623 0066 13       		.uleb128 0x13
+ 624 0067 00       		.byte	0
+ 625 0068 00       		.byte	0
+ 626 0069 08       		.uleb128 0x8
+ 627 006a 34       		.uleb128 0x34
+ 628 006b 00       		.byte	0
+ 629 006c 03       		.uleb128 0x3
+ 630 006d 08       		.uleb128 0x8
+ 631 006e 3A       		.uleb128 0x3a
+ 632 006f 0B       		.uleb128 0xb
+ 633 0070 3B       		.uleb128 0x3b
+ 634 0071 0B       		.uleb128 0xb
+ 635 0072 49       		.uleb128 0x49
+ 636 0073 13       		.uleb128 0x13
+ 637 0074 02       		.uleb128 0x2
+ 638 0075 17       		.uleb128 0x17
+ 639 0076 00       		.byte	0
+ 640 0077 00       		.byte	0
+ 641 0078 09       		.uleb128 0x9
+ 642 0079 34       		.uleb128 0x34
+ 643 007a 00       		.byte	0
+ 644 007b 03       		.uleb128 0x3
+ 645 007c 0E       		.uleb128 0xe
+ 646 007d 3A       		.uleb128 0x3a
+ 647 007e 0B       		.uleb128 0xb
+ 648 007f 3B       		.uleb128 0x3b
+ 649 0080 0B       		.uleb128 0xb
+ 650 0081 49       		.uleb128 0x49
+ 651 0082 13       		.uleb128 0x13
+ 652 0083 02       		.uleb128 0x2
+ 653 0084 18       		.uleb128 0x18
+ 654 0085 00       		.byte	0
+ 655 0086 00       		.byte	0
+ 656 0087 0A       		.uleb128 0xa
+ 657 0088 34       		.uleb128 0x34
+ 658 0089 00       		.byte	0
+ 659 008a 03       		.uleb128 0x3
+ 660 008b 0E       		.uleb128 0xe
+ 661 008c 3A       		.uleb128 0x3a
+ 662 008d 0B       		.uleb128 0xb
+ 663 008e 3B       		.uleb128 0x3b
+ 664 008f 0B       		.uleb128 0xb
+ 665 0090 49       		.uleb128 0x49
+ 666 0091 13       		.uleb128 0x13
+ 667 0092 00       		.byte	0
+ 668 0093 00       		.byte	0
+ 669 0094 0B       		.uleb128 0xb
+ 670 0095 898201   		.uleb128 0x4109
+ 671 0098 00       		.byte	0
+ 672 0099 11       		.uleb128 0x11
+ 673 009a 01       		.uleb128 0x1
+ 674 009b 31       		.uleb128 0x31
+ 675 009c 13       		.uleb128 0x13
+ 676 009d 00       		.byte	0
+ 677 009e 00       		.byte	0
+ 678 009f 0C       		.uleb128 0xc
+ 679 00a0 898201   		.uleb128 0x4109
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 14
+
+
+ 680 00a3 01       		.byte	0x1
+ 681 00a4 11       		.uleb128 0x11
+ 682 00a5 01       		.uleb128 0x1
+ 683 00a6 31       		.uleb128 0x31
+ 684 00a7 13       		.uleb128 0x13
+ 685 00a8 01       		.uleb128 0x1
+ 686 00a9 13       		.uleb128 0x13
+ 687 00aa 00       		.byte	0
+ 688 00ab 00       		.byte	0
+ 689 00ac 0D       		.uleb128 0xd
+ 690 00ad 8A8201   		.uleb128 0x410a
+ 691 00b0 00       		.byte	0
+ 692 00b1 02       		.uleb128 0x2
+ 693 00b2 18       		.uleb128 0x18
+ 694 00b3 9142     		.uleb128 0x2111
+ 695 00b5 18       		.uleb128 0x18
+ 696 00b6 00       		.byte	0
+ 697 00b7 00       		.byte	0
+ 698 00b8 0E       		.uleb128 0xe
+ 699 00b9 01       		.uleb128 0x1
+ 700 00ba 01       		.byte	0x1
+ 701 00bb 49       		.uleb128 0x49
+ 702 00bc 13       		.uleb128 0x13
+ 703 00bd 01       		.uleb128 0x1
+ 704 00be 13       		.uleb128 0x13
+ 705 00bf 00       		.byte	0
+ 706 00c0 00       		.byte	0
+ 707 00c1 0F       		.uleb128 0xf
+ 708 00c2 21       		.uleb128 0x21
+ 709 00c3 00       		.byte	0
+ 710 00c4 49       		.uleb128 0x49
+ 711 00c5 13       		.uleb128 0x13
+ 712 00c6 2F       		.uleb128 0x2f
+ 713 00c7 0B       		.uleb128 0xb
+ 714 00c8 00       		.byte	0
+ 715 00c9 00       		.byte	0
+ 716 00ca 10       		.uleb128 0x10
+ 717 00cb 34       		.uleb128 0x34
+ 718 00cc 00       		.byte	0
+ 719 00cd 03       		.uleb128 0x3
+ 720 00ce 0E       		.uleb128 0xe
+ 721 00cf 3A       		.uleb128 0x3a
+ 722 00d0 0B       		.uleb128 0xb
+ 723 00d1 3B       		.uleb128 0x3b
+ 724 00d2 05       		.uleb128 0x5
+ 725 00d3 49       		.uleb128 0x49
+ 726 00d4 13       		.uleb128 0x13
+ 727 00d5 3F       		.uleb128 0x3f
+ 728 00d6 19       		.uleb128 0x19
+ 729 00d7 3C       		.uleb128 0x3c
+ 730 00d8 19       		.uleb128 0x19
+ 731 00d9 00       		.byte	0
+ 732 00da 00       		.byte	0
+ 733 00db 11       		.uleb128 0x11
+ 734 00dc 34       		.uleb128 0x34
+ 735 00dd 00       		.byte	0
+ 736 00de 03       		.uleb128 0x3
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 15
+
+
+ 737 00df 0E       		.uleb128 0xe
+ 738 00e0 3A       		.uleb128 0x3a
+ 739 00e1 0B       		.uleb128 0xb
+ 740 00e2 3B       		.uleb128 0x3b
+ 741 00e3 0B       		.uleb128 0xb
+ 742 00e4 49       		.uleb128 0x49
+ 743 00e5 13       		.uleb128 0x13
+ 744 00e6 3F       		.uleb128 0x3f
+ 745 00e7 19       		.uleb128 0x19
+ 746 00e8 02       		.uleb128 0x2
+ 747 00e9 18       		.uleb128 0x18
+ 748 00ea 00       		.byte	0
+ 749 00eb 00       		.byte	0
+ 750 00ec 12       		.uleb128 0x12
+ 751 00ed 2E       		.uleb128 0x2e
+ 752 00ee 00       		.byte	0
+ 753 00ef 3F       		.uleb128 0x3f
+ 754 00f0 19       		.uleb128 0x19
+ 755 00f1 3C       		.uleb128 0x3c
+ 756 00f2 19       		.uleb128 0x19
+ 757 00f3 6E       		.uleb128 0x6e
+ 758 00f4 08       		.uleb128 0x8
+ 759 00f5 03       		.uleb128 0x3
+ 760 00f6 08       		.uleb128 0x8
+ 761 00f7 3A       		.uleb128 0x3a
+ 762 00f8 0B       		.uleb128 0xb
+ 763 00f9 3B       		.uleb128 0x3b
+ 764 00fa 0B       		.uleb128 0xb
+ 765 00fb 00       		.byte	0
+ 766 00fc 00       		.byte	0
+ 767 00fd 13       		.uleb128 0x13
+ 768 00fe 2E       		.uleb128 0x2e
+ 769 00ff 00       		.byte	0
+ 770 0100 3F       		.uleb128 0x3f
+ 771 0101 19       		.uleb128 0x19
+ 772 0102 3C       		.uleb128 0x3c
+ 773 0103 19       		.uleb128 0x19
+ 774 0104 6E       		.uleb128 0x6e
+ 775 0105 0E       		.uleb128 0xe
+ 776 0106 03       		.uleb128 0x3
+ 777 0107 0E       		.uleb128 0xe
+ 778 0108 3A       		.uleb128 0x3a
+ 779 0109 0B       		.uleb128 0xb
+ 780 010a 3B       		.uleb128 0x3b
+ 781 010b 0B       		.uleb128 0xb
+ 782 010c 00       		.byte	0
+ 783 010d 00       		.byte	0
+ 784 010e 00       		.byte	0
+ 785              		.section	.debug_loc,"",%progbits
+ 786              	.Ldebug_loc0:
+ 787              	.LLST0:
+ 788 0000 06000000 		.4byte	.LVL0
+ 789 0004 0A000000 		.4byte	.LVL1
+ 790 0008 0200     		.2byte	0x2
+ 791 000a 30       		.byte	0x30
+ 792 000b 9F       		.byte	0x9f
+ 793 000c 0A000000 		.4byte	.LVL1
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 16
+
+
+ 794 0010 A2000000 		.4byte	.LVL20
+ 795 0014 0100     		.2byte	0x1
+ 796 0016 54       		.byte	0x54
+ 797 0017 00000000 		.4byte	0
+ 798 001b 00000000 		.4byte	0
+ 799              		.section	.debug_aranges,"",%progbits
+ 800 0000 1C000000 		.4byte	0x1c
+ 801 0004 0200     		.2byte	0x2
+ 802 0006 00000000 		.4byte	.Ldebug_info0
+ 803 000a 04       		.byte	0x4
+ 804 000b 00       		.byte	0
+ 805 000c 0000     		.2byte	0
+ 806 000e 0000     		.2byte	0
+ 807 0010 00000000 		.4byte	.LFB63
+ 808 0014 F8000000 		.4byte	.LFE63-.LFB63
+ 809 0018 00000000 		.4byte	0
+ 810 001c 00000000 		.4byte	0
+ 811              		.section	.debug_ranges,"",%progbits
+ 812              	.Ldebug_ranges0:
+ 813 0000 00000000 		.4byte	.LFB63
+ 814 0004 F8000000 		.4byte	.LFE63
+ 815 0008 00000000 		.4byte	0
+ 816 000c 00000000 		.4byte	0
+ 817              		.section	.debug_line,"",%progbits
+ 818              	.Ldebug_line0:
+ 819 0000 13020000 		.section	.debug_str,"MS",%progbits,1
+ 819      0200E001 
+ 819      00000201 
+ 819      FB0E0D00 
+ 819      01010101 
+ 820              	.LASF9:
+ 821 0000 5F5F696E 		.ascii	"__int32_t\000"
+ 821      7433325F 
+ 821      7400
+ 822              	.LASF26:
+ 823 000a 4379446D 		.ascii	"CyDmaTdSetAddress\000"
+ 823      61546453 
+ 823      65744164 
+ 823      64726573 
+ 823      7300
+ 824              	.LASF23:
+ 825 001c 444D415F 		.ascii	"DMA_DmaInitialize\000"
+ 825      446D6149 
+ 825      6E697469 
+ 825      616C697A 
+ 825      6500
+ 826              	.LASF3:
+ 827 002e 73686F72 		.ascii	"short unsigned int\000"
+ 827      7420756E 
+ 827      7369676E 
+ 827      65642069 
+ 827      6E7400
+ 828              	.LASF27:
+ 829 0041 4379446D 		.ascii	"CyDmaChSetInitialTd\000"
+ 829      61436853 
+ 829      6574496E 
+ 829      69746961 
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 17
+
+
+ 829      6C546400 
+ 830              	.LASF24:
+ 831 0055 4379446D 		.ascii	"CyDmaTdAllocate\000"
+ 831      61546441 
+ 831      6C6C6F63 
+ 831      61746500 
+ 832              	.LASF14:
+ 833 0065 666C6F61 		.ascii	"float\000"
+ 833      7400
+ 834              	.LASF1:
+ 835 006b 756E7369 		.ascii	"unsigned char\000"
+ 835      676E6564 
+ 835      20636861 
+ 835      7200
+ 836              	.LASF30:
+ 837 0079 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 837      43313120 
+ 837      352E342E 
+ 837      31203230 
+ 837      31363036 
+ 838 00ac 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 838      20726576 
+ 838      6973696F 
+ 838      6E203233 
+ 838      37373135 
+ 839 00df 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 839      66756E63 
+ 839      74696F6E 
+ 839      2D736563 
+ 839      74696F6E 
+ 840              	.LASF17:
+ 841 0107 72656738 		.ascii	"reg8\000"
+ 841      00
+ 842              	.LASF25:
+ 843 010c 4379446D 		.ascii	"CyDmaTdSetConfiguration\000"
+ 843      61546453 
+ 843      6574436F 
+ 843      6E666967 
+ 843      75726174 
+ 844              	.LASF5:
+ 845 0124 6C6F6E67 		.ascii	"long unsigned int\000"
+ 845      20756E73 
+ 845      69676E65 
+ 845      6420696E 
+ 845      7400
+ 846              	.LASF22:
+ 847 0136 7461626C 		.ascii	"tabla\000"
+ 847      6100
+ 848              	.LASF34:
+ 849 013c 444D415F 		.ascii	"DMA_TD\000"
+ 849      544400
+ 850              	.LASF21:
+ 851 0143 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 851      52784275 
+ 851      66666572 
+ 851      00
+ 852              	.LASF29:
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 18
+
+
+ 853 0150 4441435F 		.ascii	"DAC_Start\000"
+ 853      53746172 
+ 853      7400
+ 854              	.LASF15:
+ 855 015a 646F7562 		.ascii	"double\000"
+ 855      6C6500
+ 856              	.LASF33:
+ 857 0161 6D61696E 		.ascii	"main\000"
+ 857      00
+ 858              	.LASF28:
+ 859 0166 4379446D 		.ascii	"CyDmaChEnable\000"
+ 859      61436845 
+ 859      6E61626C 
+ 859      6500
+ 860              	.LASF12:
+ 861 0174 75696E74 		.ascii	"uint16\000"
+ 861      313600
+ 862              	.LASF20:
+ 863 017b 444D415F 		.ascii	"DMA_Chan\000"
+ 863      4368616E 
+ 863      00
+ 864              	.LASF13:
+ 865 0184 75696E74 		.ascii	"uint32\000"
+ 865      333200
+ 866              	.LASF8:
+ 867 018b 756E7369 		.ascii	"unsigned int\000"
+ 867      676E6564 
+ 867      20696E74 
+ 867      00
+ 868              	.LASF7:
+ 869 0198 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 869      206C6F6E 
+ 869      6720756E 
+ 869      7369676E 
+ 869      65642069 
+ 870              	.LASF32:
+ 871 01af 443A5C44 		.ascii	"D:\\Documentos\\GITUD\\Documents\\PSoC Creator\\cla"
+ 871      6F63756D 
+ 871      656E746F 
+ 871      735C4749 
+ 871      5455445C 
+ 872 01dd 7365735C 		.ascii	"ses\\claseDAC-DMA.cydsn\000"
+ 872      636C6173 
+ 872      65444143 
+ 872      2D444D41 
+ 872      2E637964 
+ 873              	.LASF10:
+ 874 01f4 696E7433 		.ascii	"int32_t\000"
+ 874      325F7400 
+ 875              	.LASF19:
+ 876 01fc 73697A65 		.ascii	"sizetype\000"
+ 876      74797065 
+ 876      00
+ 877              	.LASF6:
+ 878 0205 6C6F6E67 		.ascii	"long long int\000"
+ 878      206C6F6E 
+ 878      6720696E 
+ARM GAS  C:\Users\GITUD\AppData\Local\Temp\ccZCDyYW.s 			page 19
+
+
+ 878      7400
+ 879              	.LASF31:
+ 880 0213 6D61696E 		.ascii	"main.c\000"
+ 880      2E6300
+ 881              	.LASF16:
+ 882 021a 63686172 		.ascii	"char\000"
+ 882      00
+ 883              	.LASF2:
+ 884 021f 73686F72 		.ascii	"short int\000"
+ 884      7420696E 
+ 884      7400
+ 885              	.LASF11:
+ 886 0229 75696E74 		.ascii	"uint8\000"
+ 886      3800
+ 887              	.LASF4:
+ 888 022f 6C6F6E67 		.ascii	"long int\000"
+ 888      20696E74 
+ 888      00
+ 889              	.LASF18:
+ 890 0238 6C6F6E67 		.ascii	"long double\000"
+ 890      20646F75 
+ 890      626C6500 
+ 891              	.LASF0:
+ 892 0244 7369676E 		.ascii	"signed char\000"
+ 892      65642063 
+ 892      68617200 
+ 893              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
